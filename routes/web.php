@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,10 +14,40 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::get('/', function()
+{
     return view('auth.login');
 });
 
-Route::get('/ab', function () {
-    return view('about');
+Route::get('/myblog/{page?}', 'App\Http\Controllers\BlogController@index');
+
+Auth::routes();
+
+Route::get('/home', function()
+{
+    return view('home');
 });
+
+ Route::view('/redactor', 'redactor')->middleware('auth')->name('redactor');
+
+ Route::view('/load', 'load')->middleware('auth')->name('load');
+
+
+/*  Route::get('/redactor', function()
+{
+    return view('redactor');
+});  */
+
+//Route::post('/redactor', 'BlogController@store');
+Route::post('/redactor', [\App\Http\Controllers\BlogController::class, 'store']);
+
+
+/* Route::get('/load', function()
+{
+    return view('load');
+});
+ */
+
+Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'save']);
+
+Route::post('/load', 'BlogController@load');
